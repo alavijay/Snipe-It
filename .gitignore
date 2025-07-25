@@ -1,0 +1,15 @@
+# Node.js dependencies
+node_modules/
+
+# Environment files
+.env
+
+# other files
+trace-**.zip
+Thumbs.db
+.DS_Store
+
+# Build output
+videos/
+build/
+
