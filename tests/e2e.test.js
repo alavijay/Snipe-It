@@ -1,7 +1,8 @@
 const { chromium, devices } = require('playwright');
 const HomePage = require('../pages/HomePage');
-const ResultsPage = require('../pages/ResultsPage');
-const CheckoutPage = require('../pages/CheckoutPage');
+const LoginPage = require('../pages/LoginPage');
+const AssetPage = require('../pages/AssetPage');
+
 
 const configurations = [
   {
@@ -10,12 +11,12 @@ const configurations = [
     traceFile: 'trace-desktop.zip',
     videoDir: 'videos/desktop/',
   },
-  {
-    name: 'Mobile (iPhone 13)',
-    options: devices['iPhone 13'],
-    traceFile: 'trace-mobile.zip',
-    videoDir: 'videos/mobile/',
-  },
+  // {
+  //   name: 'Mobile (iPhone 13)',
+  //   options: devices['iPhone 13'],
+  //   traceFile: 'trace-mobile.zip',     ///////// enable it if you want to run tests on mobile view
+  //   videoDir: 'videos/mobile/',
+  // },
 ];
 
 for (const config of configurations) {
@@ -24,8 +25,8 @@ for (const config of configurations) {
     let context;
     let page;
     let homePage;
-    let resultsPage;
-    let checkoutPage;
+    let assetPage;
+    let loginPage;
 
     beforeAll(async () => {
       browser = await chromium.launch({ headless: false });
@@ -39,8 +40,9 @@ for (const config of configurations) {
 
       page = await context.newPage();
       homePage = new HomePage(page);
-      resultsPage = new ResultsPage(page);
-      checkoutPage = new CheckoutPage(page);
+      loginPage = new LoginPage(page);
+      assetPage = new AssetPage(page);
+
     });
 
     afterAll(async () => {
@@ -51,22 +53,22 @@ for (const config of configurations) {
 
     test('Make a booking', async () => {
 
-      // navigate to RMS
-      await homePage.goToRMS();
-      expect(await page.title()).toContain('Online Bookings');
+      // navigate to snipe it
+      await loginPage.goToSinpeIt();
+      await loginPage.login();
 
-      // search rooms
-      await homePage.openCalender();
-      await homePage.selectDate(page, 1); // select check in date which is tomorrow
-      await homePage.selectDate(page, 2); // Select check out date which is the day after tomorrow
-      await homePage.searchBooking();   
+      // wait for home page to load and navigate to create asset
+      await homePage.gotoCreateAsset();
 
-      // select room and go to checkout
-      expect(await resultsPage.availableRooms()).toBeGreaterThan(0);
-      await resultsPage.addRoomToCart();
+      // create a new asset
+      await assetPage.enterAssetDetails();
 
-      // complete checkout and pay and confirm booking no
-      await checkoutPage.fillDetails();
+      
+      
+      
+      // final wait to ensure all actions are completed
+      await new Promise(resolve => setTimeout(resolve, 3000)); // waits for 3 seconds
+
 
     });
   });

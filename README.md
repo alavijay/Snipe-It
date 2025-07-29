@@ -3,13 +3,12 @@
 add .env file as per env.template and fill the required info
 
 ```sh
-npm install
-npx playwright install
+npm i
 ```
 
 # Run tests
 
 ```sh
-npm test
+npm t
 ```
 

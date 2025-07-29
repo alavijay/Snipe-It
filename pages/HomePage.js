@@ -1,19 +1,22 @@
 require('dotenv').config();
-const urlNo = process.env.urlID;
+const url = process.env.URL;
+const BasePage = require('./BasePage');
 
-class HomePage {
+class HomePage extends BasePage{
   constructor(page) {
-    this.page = page;
-    this.checkIn = 'text="Check In"';
-    this.search = '[data-testid="search"]'
+    super(page);
+    this.createNew = page.getByText('Create New');
+    this.assetNav = page.getByRole('navigation').getByText('Asset', { exact: true }); // new locator
+    this.passwordInput = page.getByRole('textbox', { name: 'Password' });
+    this.loginButton = page.getByRole('button', { name: 'Login' });
   }
 
-  async goToRMS() {
-    await this.page.goto('https://demo.snipeitapp.com/login');
-  }
-
-  async openCalender() {
-    await this.page.click(this.checkIn);
+  async gotoCreateAsset() {
+    await this.waitForElement(this.createNew);
+    await this.createNew.click(); 
+    await this.waitForElement(this.assetNav); // wait for the asset navigation to be visible
+    await this.assetNav.click(); // navigate to the asset section
+    await this.page.waitForURL('https://demo.snipeitapp.com/hardware/create');
   }
 
   async selectDate(page, daysFromToday) {
@@ -30,16 +33,7 @@ class HomePage {
     await page.locator(`[aria-label="${ariaLabel}"]`).click();
   }
 
-  async searchBooking() {
-    const doneButton = this.page.getByRole('button', { name: 'Done' });
-    if (await doneButton.isVisible() && await doneButton.isEnabled()) {
-    await doneButton.click();
-    console.log('Clicked "Done" button!');
-    } else {
-      console.log(' "Done"button is not clickable.');
-    }
-    await this.page.click(this.search);
-  }
+
 
 }
 
