@@ -61,15 +61,18 @@ for (const config of configurations) {
       await homePage.gotoCreateAsset();
 
       // create a new asset
-      await assetPage.enterAssetDetails();
+      await assetPage.submitAssetDetails();
 
-      
-      
-      
-      // final wait to ensure all actions are completed
-      await new Promise(resolve => setTimeout(resolve, 3000)); // waits for 3 seconds
+      //  search for the asset
+      await assetPage.gotoAssetPage();
+      await assetPage.findAsset();
 
+      // verify asset details
+      await assetPage.verifyAssetDetails();
 
+      //verify asset History
+      await assetPage.verifyAssetHistory();
+      
     });
   });
 }
