@@ -1,6 +1,4 @@
-# Setup
-
-add .env file as per env.template and fill the required info
+# Setup for the first time
 
 ```sh
 npm i
